@@ -1,0 +1,23 @@
+import yfinance as yf
+import mplfinance as mpf
+
+ticker_symbol = 'MSFT'
+start_date = '2014-02-24'  # Adjust dates as needed
+end_date = '2024-02-24'
+
+# Fetch the historical data using yfinance
+df = yf.download(ticker_symbol, start=start_date, end=end_date)
+
+# Calculate the moving averages
+df['MA50'] = df['Adj Close'].rolling(window=50).mean()
+df['MA200'] = df['Adj Close'].rolling(window=200).mean()
+
+# Configure the Moving Average lines
+add_plots = [
+    mpf.make_addplot(df['MA50'], color='blue', width=0.75),
+    mpf.make_addplot(df['MA200'], color='red', width=0.75)
+]
+
+# Plot
+mpf.plot(df, type='candle', addplot=add_plots, volume=True, style='yahoo',
+         title=f'{ticker_symbol} Stock Price - 10 Year Overview', figratio=(12,8), figscale=1.2)
